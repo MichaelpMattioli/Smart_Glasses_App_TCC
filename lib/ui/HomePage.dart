@@ -5,7 +5,6 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-import '../BackgroundCollectingTask.dart';
 import 'BluetoothDeviceListEntry.dart';
 import 'Functionalities.dart';
 import '../SelectBondedDevicePage.dart';
@@ -42,10 +41,6 @@ class _HomePage extends State<HomePage> {
   String _address = "...";
   String _name = "...";
 
-  Timer? _discoverableTimeoutTimer;
-  int _discoverableTimeoutSecondsLeft = 0;
-
-  BackgroundCollectingTask? _collectingTask;
   BluetoothDevice? selectedDevice;
 
   @override
@@ -76,17 +71,12 @@ class _HomePage extends State<HomePage> {
 
     //conectar com o raspberry por bluetooth
 
-
     List<_DeviceWithAvailability> devices =
     List<_DeviceWithAvailability>.empty(growable: true);
 
     // Availability
     StreamSubscription<BluetoothDiscoveryResult>? _discoveryStreamSubscription;
     bool _isDiscovering = false;
-
-    // _SelectBondedDevicePage();
-    //
-    // _isDiscovering = widget.checkAvailability;
 
     void _startDiscovery() {
       _discoveryStreamSubscription =
@@ -114,24 +104,6 @@ class _HomePage extends State<HomePage> {
       _startDiscovery();
     }
 
-    // // Setup a list of the bonded devices
-    // FlutterBluetoothSerial.instance
-    //     .getBondedDevices()
-    //     .then((List<BluetoothDevice> bondedDevices) {
-    //   setState(() {
-    //     devices = bondedDevices
-    //         .map(
-    //           (device) => _DeviceWithAvailability(
-    //         device,
-    //         widget.checkAvailability
-    //             ? _DeviceAvailability.maybe
-    //             : _DeviceAvailability.yes,
-    //       ),
-    //     )
-    //         .toList();
-    //   });
-    // });
-
     void _restartDiscovery() {
       setState(() {
         _isDiscovering = true;
@@ -149,8 +121,6 @@ class _HomePage extends State<HomePage> {
   @override
   void dispose() {
     FlutterBluetoothSerial.instance.setPairingRequestHandler(null);
-    _collectingTask?.dispose();
-    _discoverableTimeoutTimer?.cancel();
     super.dispose();
   }
 
@@ -452,43 +422,4 @@ class _HomePage extends State<HomePage> {
       ]),
     );
   }
-
-// void _startChat(BuildContext context, BluetoothDevice server) {
-//   Navigator.of(context).push(
-//     MaterialPageRoute(
-//       builder: (context) {
-//         return ChatPage(server: server);
-//       },
-//     ),
-//   );
-// }
-//
-// Future<void> _startBackgroundTask(
-//   BuildContext context,
-//   BluetoothDevice server,
-// ) async {
-//   try {
-//     _collectingTask = await BackgroundCollectingTask.connect(server);
-//     await _collectingTask!.start();
-//   } catch (ex) {
-//     _collectingTask?.cancel();
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: const Text('Error occured while connecting'),
-//           content: Text("${ex.toString()}"),
-//           actions: <Widget>[
-//             new TextButton(
-//               child: new Text("Close"),
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-// }
 }

@@ -25,7 +25,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -44,39 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCNsx-i3eccTRCE0eI37tf77NhyNBHX170',
-    appId: '1:465617825666:web:382be2387d98ebc072299b',
-    messagingSenderId: '465617825666',
-    projectId: 'flutterappzanini',
-    authDomain: 'flutterappzanini.firebaseapp.com',
-    storageBucket: 'flutterappzanini.appspot.com',
+    apiKey: 'AIzaSyBTwwgfn3hwmRr61df7AeE_McElAiY3mfE',
+    appId: '1:206349483190:web:75ff14ffe744f70f1d7a17',
+    messagingSenderId: '206349483190',
+    projectId: 'smartglasstcc',
+    authDomain: 'smartglasstcc.firebaseapp.com',
+    storageBucket: 'smartglasstcc.appspot.com',
+    measurementId: 'G-ZBH3HLZ0YT',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBTu_KCrSe8gHGX16YsAWfAMgnRVCg_kcI',
-    appId: '1:465617825666:android:2eb3b6b819183bdc72299b',
-    messagingSenderId: '465617825666',
-    projectId: 'flutterappzanini',
-    storageBucket: 'flutterappzanini.appspot.com',
+    apiKey: 'AIzaSyA3LaRZMpUUV3qveiYKWz5OHjRmrwez-J4',
+    appId: '1:206349483190:android:647a3824c8de61f61d7a17',
+    messagingSenderId: '206349483190',
+    projectId: 'smartglasstcc',
+    storageBucket: 'smartglasstcc.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDHOacZmCugNsLz0akO5StM2FUXENcJR18',
-    appId: '1:465617825666:ios:2bf3bed434f06c4c72299b',
-    messagingSenderId: '465617825666',
-    projectId: 'flutterappzanini',
-    storageBucket: 'flutterappzanini.appspot.com',
-    iosClientId: '465617825666-2ir3f4pg39r79pn59ifdtrpg85nbtcq8.apps.googleusercontent.com',
-    iosBundleId: 'com.example.appOculosZan',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDHOacZmCugNsLz0akO5StM2FUXENcJR18',
-    appId: '1:465617825666:ios:2bf3bed434f06c4c72299b',
-    messagingSenderId: '465617825666',
-    projectId: 'flutterappzanini',
-    storageBucket: 'flutterappzanini.appspot.com',
-    iosClientId: '465617825666-2ir3f4pg39r79pn59ifdtrpg85nbtcq8.apps.googleusercontent.com',
-    iosBundleId: 'com.example.appOculosZan',
+    apiKey: 'AIzaSyBFHAd0bVRDiH_EKXdjPB8_6g0EImzUpUs',
+    appId: '1:206349483190:ios:468846ccbd8483f31d7a17',
+    messagingSenderId: '206349483190',
+    projectId: 'smartglasstcc',
+    storageBucket: 'smartglasstcc.appspot.com',
+    iosClientId: '206349483190-e4cimloghj0j6suv8u1p0b33nnl1m8mn.apps.googleusercontent.com',
+    iosBundleId: 'com.example.testeAppTcc',
   );
 }

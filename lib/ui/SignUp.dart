@@ -1,73 +1,60 @@
-import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_application_1/ui/HomePage.dart';
-import 'package:flutter_application_1/ui/SignUp.dart';
+import 'package:flutter/material.dart';
 
-import 'ForgotPassword.dart';
-import '../../main.dart';
+import '../main.dart';
 
-class LogInScreen extends StatefulWidget {
-  final VoidCallback onClickedSignUp;
+class SignUpScreen extends StatefulWidget {
+  // final VoidCallback onClickedSignIn;
 
-  const LogInScreen({
-    Key? key,
-    required this.onClickedSignUp,
-  }) : super(key: key);
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<LogInScreen> createState() => _LogInScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LogInScreenState extends State<LogInScreen> {
-  //Paleta de cores
-  int blue_white = 0xFF4D7FAE;
-  int blue_median = 0xFF22496D;
-  int blue_strong = 0xFF7371FC;
-
+class _SignUpScreenState extends State<SignUpScreen> {
+  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-
   @override
-  void dispose() {
+  void dispose(){
+    super.dispose();
+    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    showLoaderDialog(BuildContext context) {
-      AlertDialog alert = AlertDialog(
+    showLoaderDialog(BuildContext context){
+      AlertDialog alert=AlertDialog(
         content: Row(
           children: [
             CircularProgressIndicator(),
-            Container(
-                margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
-          ],
-        ),
+            Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
+          ],),
       );
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
+      showDialog(barrierDismissible: false,
+        context:context,
+        builder:(BuildContext context){
           return alert;
         },
       );
     }
-
-    Future signIn() async {
+    Future signUp() async {
       showLoaderDialog(context);
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim());
+
       } on FirebaseAuthException catch (e) {
         print(e);
       }
       navigatorKey.currentState!.pop();
     }
-
     return Scaffold(
       backgroundColor: Color(0xFF7371FC),
       extendBodyBehindAppBar: true,
@@ -90,7 +77,7 @@ class _LogInScreenState extends State<LogInScreen> {
                 padding: const EdgeInsets.all(10),
                 margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
                 child: Text(
-                  'BEM VINDO',
+                  'CADASTRE-SE',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -99,7 +86,21 @@ class _LogInScreenState extends State<LogInScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                style: TextStyle(color: Colors.white),
+                controller: nameController,
+                decoration: const InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    labelText: 'Nome',
+                    labelStyle: TextStyle(color: Colors.white)),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
                     enabledBorder: UnderlineInputBorder(
@@ -115,7 +116,7 @@ class _LogInScreenState extends State<LogInScreen> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 30),
               child: TextField(
-                style: TextStyle(color: Colors.white),
+
                 obscureText: true,
                 controller: passwordController,
                 decoration: const InputDecoration(
@@ -128,21 +129,16 @@ class _LogInScreenState extends State<LogInScreen> {
                     labelStyle: TextStyle(color: Colors.white)),
               ),
             ),
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                  maxHeight: 50, minHeight: 0, maxWidth: 25, minWidth: 0),
-              child: ElevatedButton(
+            Container(
+              constraints: BoxConstraints(maxWidth: 55, maxHeight: 100),
+              child: TextButton(
                 child: const Text(
-                  'Conecte-se',
+                  'Registre-se',
                   style: TextStyle(fontSize: 18, color: Color(0XFF7371FC)),
                 ),
                 onPressed: () {
-                  if (emailController.text.contains("adminGlass")) {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => HomePage()));
-                  } else {
-                    signIn();
-                  }
+                  print("${nameController.text},${emailController.text},${passwordController.text}");
+                  signUp();
                 },
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -152,43 +148,28 @@ class _LogInScreenState extends State<LogInScreen> {
                     backgroundColor: MaterialStateProperty.all(Colors.white)),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ForgotPasswordScreen()));
-              },
-              child: Text(
-                'Esqueceu a senha?',
-                style: TextStyle(color: Colors.white),
-              ),
-              style: TextButton.styleFrom(
-                  padding: const EdgeInsets.fromLTRB(0, 24, 0, 16)),
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
                   child: const Text(
-                    'Não tem uma conta?',
+                    'Já tem uma conta?',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
                 Container(
-                    // constraints: BoxConstraints(minHeight: 100),
+                  // constraints: BoxConstraints(minHeight: 100),
                     child: TextButton(
-                  child: const Text(
-                    'Registre-se',
-                    style: TextStyle(
-                        color: Colors.white,
-                        decoration: TextDecoration.underline),
-                  ),
-                  onPressed: () {
-                    print("hello");
-                    // widget.onClickedSignUp;
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SignUpScreen()));
-                  },
-                ))
+                      child: const Text(
+                        'Acesse aqui.',
+                        style: TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.underline),
+                      ),
+                      onPressed: (){
+                        // widget.onClickedSignIn;
+                      },
+                    ))
               ],
             ),
           ],

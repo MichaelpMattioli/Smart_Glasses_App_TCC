@@ -5,11 +5,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
+import '../main.dart';
+
 class FunctionPage extends StatefulWidget {
-  // const FunctionPage({Key? key}) : super(key: key);
   final BluetoothDevice server;
 
-  const FunctionPage({required this.server});
+  const FunctionPage({Key? key,required this.server}): super(key: key);
 
   @override
   State<FunctionPage> createState() => _FunctionsPage();
@@ -36,15 +37,7 @@ class _FunctionsPage extends State<FunctionPage> {
   Color text_func_button_on = Color(0XFF7371FC);
   Color text_func_button_off = Color(0XFFCDC1FF);
 
-  static final clientID = 0;
   BluetoothConnection? connection;
-
-  List<_Message> messages = List<_Message>.empty(growable: true);
-  String _messageBuffer = '';
-
-  final TextEditingController textEditingController =
-      new TextEditingController();
-  final ScrollController listScrollController = new ScrollController();
 
   bool isConnecting = true;
 
@@ -57,13 +50,19 @@ class _FunctionsPage extends State<FunctionPage> {
 
     BluetoothConnection.toAddress(widget.server.address).then((_connection) {
       print('Connected to the device');
+
       connection = _connection;
       setState(() {
         isConnecting = false;
         isDisconnecting = false;
       });
 
-      connection!.input!.listen(_onDataReceived).onDone(() {
+      final listener_data_bluetooth =
+      connection!.input!.listen(_onDataReceived);
+
+      _sendMessage("init_paring");
+
+      listener_data_bluetooth.onDone(() {
         // Example: Detect which side closed the connection
         // There should be `isDisconnecting` flag to show are we are (locally)
         // in middle of disconnecting process, should be set before calling
@@ -79,12 +78,23 @@ class _FunctionsPage extends State<FunctionPage> {
           setState(() {});
         }
       });
+
+      listener_data_bluetooth.onData((data) {
+        String? stringData = _onDataReceived(data);
+        if (stringData!.contains("paring_returned")) {
+          print("ping pong - Success");
+          navigatorKey.currentState!.pop();
+        }
+      });
+
     }).catchError((error) {
       print('Cannot connect, exception occured');
       print(error);
       Navigator.of(context).pop();
       throw UnimplementedError();
     });
+
+
   }
 
   @override
@@ -101,6 +111,25 @@ class _FunctionsPage extends State<FunctionPage> {
 
   @override
   Widget build(BuildContext context) {
+    showLoaderDialog(BuildContext context) {
+      AlertDialog alert = AlertDialog(
+        content: Row(
+          children: [
+            CircularProgressIndicator(),
+            Container(
+                margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
+          ],
+        ),
+      );
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+    // showLoaderDialog(context);
     return Scaffold(
       backgroundColor: Color(0XFF7371FC),
       extendBodyBehindAppBar: true,
@@ -213,7 +242,7 @@ class _FunctionsPage extends State<FunctionPage> {
     );
   }
 
-  void _onDataReceived(Uint8List data) {
+  String? _onDataReceived(Uint8List data) {
     // Allocate buffer for parsed data
     int backspacesCounter = 0;
     data.forEach((byte) {
@@ -241,14 +270,11 @@ class _FunctionsPage extends State<FunctionPage> {
     // Create message if there is new line character
     String dataString = String.fromCharCodes(buffer);
     print(dataString);
-
-
+    return dataString;
   }
 
   void _sendMessage(String text) async {
     text = text.trim();
-    textEditingController.clear();
-    print(text);
     if (text.length > 0) {
       try {
         connection!.output.add(Uint8List.fromList(utf8.encode(text + "\r\n")));

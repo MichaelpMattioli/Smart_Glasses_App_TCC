@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 
   @override
@@ -12,42 +11,56 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
+  TextEditingController emailController = TextEditingController();
 
   @override
-  void dispose(){
-    nameController.dispose();
-    passwordController.dispose();
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    showLoaderDialog(BuildContext context){
-      AlertDialog alert=AlertDialog(
-        content: Row(
-          children: [
-            CircularProgressIndicator(),
-            Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
-          ],),
-      );
-      showDialog(barrierDismissible: false,
-        context:context,
-        builder:(BuildContext context){
-          return alert;
-        },
-      );
-    }
-    Future signin() async {
-      showLoaderDialog(context);
+    Future resetPassword() async {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => Center(child: CircularProgressIndicator()));
       try {
-        await FirebaseAuth.instance.sendPasswordResetEmail(email: nameController.text.trim());
+        print(emailController.text.trim());
+        await FirebaseAuth.instance
+            .sendPasswordResetEmail(email: "michael.pmattioli@gmail.com");
+        // SnackBar(
+        //   content: const Text('Reset de senha enviado.'),
+        //   duration: const Duration(milliseconds: 1500),
+        //   width: 280.0,
+        //   // Width of the SnackBar.
+        //   padding: const EdgeInsets.symmetric(
+        //     horizontal: 8.0, // Inner padding for SnackBar content.
+        //   ),
+        //   behavior: SnackBarBehavior.floating,
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(10.0),
+        //   ),
+        // );
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      } catch (e) {
+        print("Erro ---> ${e}");
+        // SnackBar(
+        //   content: const Text("Não foi possivel enviar o reset de senha."),
+        //   duration: const Duration(milliseconds: 1500),
+        //   width: 280.0,
+        //   // Width of the SnackBar.
+        //   padding: const EdgeInsets.symmetric(
+        //     horizontal: 8.0, // Inner padding for SnackBar content.
+        //   ),
+        //   behavior: SnackBarBehavior.floating,
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(10.0),
+        //   ),
+        // );
         Navigator.of(context).pop();
-      } on FirebaseAuthException catch (e) {
-        print(e.message);
       }
-      navigatorKey.currentState!.pop();
     }
     return Scaffold(
       backgroundColor: Color(0xFF7371FC),
@@ -80,7 +93,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                controller: nameController,
+                style: TextStyle(color: Colors.white),
+                controller: emailController,
                 decoration: const InputDecoration(
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
@@ -100,7 +114,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   'Enviar',
                   style: TextStyle(fontSize: 18, color: Color(0XFF7371FC)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  resetPassword();
+                },
                 style: ButtonStyle(
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
@@ -119,19 +135,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
                 Container(
-                  // constraints: BoxConstraints(minHeight: 100),
+                    // constraints: BoxConstraints(minHeight: 100),
                     child: TextButton(
-                      child: const Text(
-                        'Registre-se',
-                        style: TextStyle(
-                            color: Colors.white,
-                            decoration: TextDecoration.underline),
-                      ),
-                      // onPressed: widget.onClickedSignUp,
-                      onPressed: (){
-
-                      },
-                    ))
+                  child: const Text(
+                    'Registre-se',
+                    style: TextStyle(
+                        color: Colors.white,
+                        decoration: TextDecoration.underline),
+                  ),
+                  // onPressed: widget.onClickedSignUp,
+                  onPressed: () {},
+                ))
               ],
             ),
           ],

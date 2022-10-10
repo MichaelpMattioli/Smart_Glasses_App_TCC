@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "206349483190",
+    "project_id": "smartglasstcc",
+    "storage_bucket": "smartglasstcc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206349483190:android:647a3824c8de61f61d7a17",
+        "android_client_info": {
+          "package_name": "com.example.teste_app_tcc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206349483190-60v9ldcgskujqsh8u2e8etf1n02ugea6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3LaRZMpUUV3qveiYKWz5OHjRmrwez-J4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206349483190-60v9ldcgskujqsh8u2e8etf1n02ugea6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

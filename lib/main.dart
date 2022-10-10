@@ -4,18 +4,18 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'ui/LogInScreen.dart';
 import 'ui/HomePage.dart';
-import 'ui/SignIn.dart';
-
+import 'ui/SignUp.dart';
 
 import 'firebase_options.dart';
 
-Future main() async{
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
 }
+
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
@@ -29,22 +29,22 @@ class MyApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: _title,
-        home: MainPage()
-    );
+        home: MainPage());
   }
 }
+
 class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(),
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot){
-            if(snapshot.hasData){
-              return HomePage();
-            }else {
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              print(snapshot.connectionState);
+              return HomePage(checkAvailability: false);
+            } else {
               return AuthPage();
             }
           },
@@ -63,7 +63,12 @@ class _AuthPageState extends State<AuthPage> {
   bool isLogin = true;
 
   @override
-  Widget build(BuildContext contex)=>
-      isLogin ? LogInScreen(onClickedSignUp: toggle) : SignUpScreen(onClickedSignUp: toggle);
-  void toggle() => setState(() => isLogin = !isLogin);
+  Widget build(BuildContext contex) => isLogin
+      ? LogInScreen(onClickedSignUp: toggle)
+      : SignUpScreen();
+
+  void toggle() => setState(() {
+        isLogin = !isLogin;
+        print(isLogin);
+      });
 }

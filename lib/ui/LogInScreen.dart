@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/ui/HomePage.dart';
@@ -152,6 +153,9 @@ class _LogInScreenState extends State<LogInScreen> {
                     backgroundColor: MaterialStateProperty.all(Colors.white)),
               ),
             ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -164,31 +168,28 @@ class _LogInScreenState extends State<LogInScreen> {
               style: TextButton.styleFrom(
                   padding: const EdgeInsets.fromLTRB(0, 24, 0, 16)),
             ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  child: const Text(
-                    'Não tem uma conta?',
-                    style: TextStyle(color: Colors.white),
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: Colors.white, fontSize:15),
+                    text: "Não tem uma conta? ",
+                    children: [
+                      TextSpan(
+                        recognizer: TapGestureRecognizer()
+                            ..onTap = widget.onClickedSignUp,
+                        text: "Registre-se",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                        )
+                      )
+                    ]
                   ),
                 ),
-                Container(
-                    // constraints: BoxConstraints(minHeight: 100),
-                    child: TextButton(
-                  child: const Text(
-                    'Registre-se',
-                    style: TextStyle(
-                        color: Colors.white,
-                        decoration: TextDecoration.underline),
-                  ),
-                  onPressed: () {
-                    print("hello");
-                    // widget.onClickedSignUp;
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SignUpScreen()));
-                  },
-                ))
               ],
             ),
           ],

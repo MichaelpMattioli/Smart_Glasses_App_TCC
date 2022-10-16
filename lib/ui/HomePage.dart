@@ -175,7 +175,36 @@ class _HomePage extends State<HomePage> {
       change_screen_of_connection_device_failed();
       selectedDevice = null;
       navigatorKey.currentState!.pop();
-      throw UnimplementedError();
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          alignment: Alignment.center,
+          actionsAlignment: MainAxisAlignment.center,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(24))),
+          title: Text("\nNão foi possivel conectar ao dispositivo.",
+              maxLines: 3,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 19,
+                  color: Color(0XFF7371FC),
+                  fontWeight: FontWeight.bold)),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK',
+                  maxLines: 3,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0XFF7371FC),
+                      fontWeight: FontWeight.bold)),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            ),
+          ],
+        ),
+      );
     });
   }
 
@@ -250,6 +279,7 @@ class _HomePage extends State<HomePage> {
       );
     });
   }
+
   void change_screen_of_connection_device_failed() {
     setState(() {
       batteryLevel = 0;
@@ -303,8 +333,6 @@ class _HomePage extends State<HomePage> {
     await FirebaseAuth.instance.signOut();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     showLoaderDialog(BuildContext context) {
@@ -313,18 +341,36 @@ class _HomePage extends State<HomePage> {
           children: [
             CircularProgressIndicator(),
             Container(
-                margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
+                margin: EdgeInsets.only(left: 7),
+                // alignment: Alignment.center,
+                child: Text("Loading...")),
+
           ],
         ),
       );
       showDialog(
-        barrierDismissible: false,
         context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
+        builder: (ctx) => AlertDialog(
+          alignment: Alignment.center,
+          actionsAlignment: MainAxisAlignment.center,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(24))),
+          title: Text("Conectando ao dispositivo\n aguarde...",
+              maxLines: 3,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 19,
+                  color: Color(0XFF7371FC),
+                  fontWeight: FontWeight.bold)),
+          actions: <Widget>[
+            CircularProgressIndicator(
+              color: Color(0XFF7371FC),
+            ),
+          ],
+        ),
       );
     }
+
     Future connectToRasp() async {
       showLoaderDialog(context);
       try {
@@ -334,6 +380,7 @@ class _HomePage extends State<HomePage> {
         print(e);
       }
     }
+
     return Scaffold(
       backgroundColor: Color(0xFF7371FC),
       extendBodyBehindAppBar: true,
@@ -505,8 +552,10 @@ class _HomePage extends State<HomePage> {
                             onTap: () async {
                               var deviceName = selectedDevice?.name;
                               var isDeviceBonded = selectedDevice?.isBonded;
-                              print("Status Device -> ${isDeviceBonded}\n Device -> ${deviceName}");
-                              if (isDeviceBonded == null || isDeviceBonded == false) {
+                              print(
+                                  "Status Device -> ${isDeviceBonded}\n Device -> ${deviceName}");
+                              if (isDeviceBonded == null ||
+                                  isDeviceBonded == false) {
                                 connectToRasp();
                               }
                             },

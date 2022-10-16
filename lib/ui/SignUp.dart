@@ -1,25 +1,26 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
 
-class SignUpScreen extends StatefulWidget {
-  // final VoidCallback onClickedSignIn;
+class SignUp extends StatefulWidget {
+  final Function() onClickedSignIn;
 
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUp({Key? key, required this.onClickedSignIn}) : super(key: key);
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpState extends State<SignUp> {
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     nameController.dispose();
     emailController.dispose();
@@ -28,33 +29,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    showLoaderDialog(BuildContext context){
-      AlertDialog alert=AlertDialog(
+    showLoaderDialog(BuildContext context) {
+      AlertDialog alert = AlertDialog(
         content: Row(
           children: [
             CircularProgressIndicator(),
-            Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
-          ],),
+            Container(
+                margin: EdgeInsets.only(left: 7), child: Text("Loading...")),
+          ],
+        ),
       );
-      showDialog(barrierDismissible: false,
-        context:context,
-        builder:(BuildContext context){
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
           return alert;
         },
       );
     }
+
     Future signUp() async {
       showLoaderDialog(context);
       try {
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim());
-
       } on FirebaseAuthException catch (e) {
         print(e);
       }
       navigatorKey.currentState!.pop();
     }
+
     return Scaffold(
       backgroundColor: Color(0xFF7371FC),
       extendBodyBehindAppBar: true,
@@ -116,7 +121,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Container(
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 30),
               child: TextField(
-
                 obscureText: true,
                 controller: passwordController,
                 decoration: const InputDecoration(
@@ -137,7 +141,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   style: TextStyle(fontSize: 18, color: Color(0XFF7371FC)),
                 ),
                 onPressed: () {
-                  print("${nameController.text},${emailController.text},${passwordController.text}");
+                  print(
+                      "${nameController.text},${emailController.text},${passwordController.text}");
                   signUp();
                 },
                 style: ButtonStyle(
@@ -148,28 +153,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     backgroundColor: MaterialStateProperty.all(Colors.white)),
               ),
             ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  child: const Text(
-                    'Já tem uma conta?',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                RichText(
+                  text: TextSpan(
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                      text: 'Já tem uma conta? ',
+                      children: [
+                        TextSpan(
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = widget.onClickedSignIn,
+                            text: 'Acesse aqui.',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                            ))
+                      ]),
                 ),
-                Container(
-                  // constraints: BoxConstraints(minHeight: 100),
-                    child: TextButton(
-                      child: const Text(
-                        'Acesse aqui.',
-                        style: TextStyle(
-                            color: Colors.white,
-                            decoration: TextDecoration.underline),
-                      ),
-                      onPressed: (){
-                        // widget.onClickedSignIn;
-                      },
-                    ))
               ],
             ),
           ],

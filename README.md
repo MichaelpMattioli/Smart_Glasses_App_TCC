@@ -1,4 +1,4 @@
-# teste_app_tcc
+# Smart Glasses App TCC
 
 A new Flutter project.
 
